@@ -1,0 +1,578 @@
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-glow: #818cf8;
+    --bg-dark: #0a0a0f;
+    --bg-card: rgba(18, 18, 28, 0.95);
+    --text-white: #ffffff;
+    --text-gray: #cbd5e1;
+    --gold: #fbbf24;
+    --crystal: #a855f7;
+    --ruby: #ef4444;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+    color: var(--text-white);
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.nav-brand .highlight {
+    background: linear-gradient(135deg, var(--primary), #a855f7);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.nav-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: var(--text-gray);
+    text-decoration: none;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary);
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.5rem 1rem;
+    border-radius: 40px;
+}
+
+.user-info i {
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+.user-level-badge {
+    background: linear-gradient(135deg, var(--primary), #a855f7);
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.btn-logout {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.btn-logout:hover {
+    background: rgba(239, 68, 68, 0.3);
+}
+
+/* Welcome Section */
+.welcome-section {
+    padding: 2rem 0;
+}
+
+.welcome-card {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.1));
+    border-radius: 1.5rem;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--glass-border);
+}
+
+.welcome-card h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-card h1 span {
+    background: linear-gradient(135deg, var(--primary), #a855f7);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+/* Wallet Section */
+.wallet-section {
+    padding: 2rem 0;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.wallet-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.wallet-card {
+    background: var(--bg-card);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s;
+}
+
+.wallet-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+}
+
+.wallet-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.coin-gold .wallet-icon {
+    background: rgba(251, 191, 36, 0.2);
+    color: var(--gold);
+}
+
+.crystal-dark .wallet-icon {
+    background: rgba(168, 85, 247, 0.2);
+    color: var(--crystal);
+}
+
+.ruby-red .wallet-icon {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--ruby);
+}
+
+.wallet-info {
+    flex: 1;
+}
+
+.wallet-info h3 {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    margin-bottom: 0.25rem;
+}
+
+.wallet-amount {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.wallet-desc {
+    font-size: 0.75rem;
+    color: var(--text-gray);
+}
+
+/* Menu Grid - 5 Menu Utama dengan Link */
+.menu-section {
+    padding: 2rem 0;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.menu-card {
+    background: var(--bg-card);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text-white);
+    display: block;
+    cursor: pointer;
+}
+
+.menu-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--primary);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.menu-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1rem;
+    transition: all 0.3s;
+}
+
+.menu-card:hover .menu-icon {
+    transform: scale(1.05);
+}
+
+.menu-icon.harga {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+}
+.menu-icon.farm {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+.menu-icon.gacha {
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+}
+.menu-icon.storage {
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+}
+.menu-icon.bank {
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+}
+
+.menu-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.menu-card p {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    margin-bottom: 1rem;
+}
+
+.menu-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-gray);
+}
+
+.menu-badge.hot {
+    background: linear-gradient(135deg, #ef4444, #f97316);
+    color: white;
+}
+
+/* Info Grid */
+.info-section {
+    padding: 2rem 0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-card {
+    background: var(--bg-card);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--glass-border);
+}
+
+.info-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.stat-row strong {
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+.quest-list, .event-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.quest-item, .event-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 0.75rem;
+}
+
+.quest-item i {
+    color: var(--success);
+}
+
+.quest-reward {
+    color: var(--gold);
+    font-size: 0.8rem;
+}
+
+.event-badge {
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.event-badge.gacha {
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+}
+.event-badge.farm {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+.event-badge.bank {
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+}
+
+.event-time {
+    font-size: 0.7rem;
+    color: var(--text-gray);
+}
+
+/* Popular Section */
+.popular-section {
+    padding: 2rem 0 4rem;
+}
+
+.popular-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.popular-card {
+    background: var(--bg-card);
+    border-radius: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text-white);
+    display: block;
+}
+
+.popular-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+}
+
+.character-rarity {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    margin-bottom: 0.75rem;
+}
+
+.rarity-legendary {
+    background: rgba(251, 191, 36, 0.2);
+    color: var(--gold);
+}
+.rarity-epic {
+    background: rgba(168, 85, 247, 0.2);
+    color: var(--crystal);
+}
+.rarity-mythic {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: white;
+}
+.rarity-rare {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.character-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.character-price {
+    color: var(--gold);
+    font-weight: 600;
+}
+
+/* Footer */
+.footer {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2rem 0;
+    text-align: center;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .navbar .container {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .nav-menu {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .nav-user {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .welcome-card h1 {
+        font-size: 1.5rem;
+    }
+    
+    .menu-grid, .info-grid, .popular-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .wallet-cards {
+        grid-template-columns: 1fr;
+    }
+}
+/* Tambahan untuk notification dan button sell */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.character-card {
+    background: var(--bg-card);
+    border-radius: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s;
+}
+
+.character-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+}
+
+.character-value {
+    color: var(--gold);
+    font-weight: 600;
+    margin: 0.5rem 0;
+}
+
+.btn-sell {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-sell:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}

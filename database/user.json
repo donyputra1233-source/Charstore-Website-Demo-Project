@@ -1,0 +1,36 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "nama": "Ryuuzen Dev's",
+      "username": "Ryuu_dev",
+      "password": "admin123",
+      "email": "admin@characterhall.com",
+      "created_at": "2025-01-15T10:30:00Z",
+      "wallet": {
+        "koin_emas": 15000,
+        "dark_crystal": 350,
+        "ruby": 125
+      },
+      "inventory": {
+        "characters": [
+          {
+            "id": "char_001",
+            "name": "Knight Lumina",
+            "rarity": "Legendary",
+            "value": 2500
+          },
+          {
+            "id": "char_002",
+            "name": "Shadow Assassin",
+            "rarity": "Epic",
+            "value": 1200
+          }
+          
+        ]
+      },
+      "level": 12,
+      "xp": 2450
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CharacterHall.store | Tempat Terkaya Karakter & Wafiu</title>
+    <meta name="description" content="Jual beli karakter wafiu, bangun kekayaan dengan quest, farming, dan level-up di CharacterHall.store">
+    <!-- Google Fonts Modern -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- AOS Library for scroll animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/public/css/index.css">
+</head>
+<body>
+
+    <!-- Elemen background modern -->
+    <div class="bg-radial-gradient"></div>
+    <div class="animated-grid"></div>
+    
+    <!-- Navigasi utama dengan efek glassmorphism -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <div class="navbar-brand">
+                <img src="/assets/image/logo.png" alt="Logo CharacterHall" class="brand-logo" onerror="this.src='https://placehold.co/48x48/6366f1/white?text=CH'">
+                <span class="brand-name">Character<span class="brand-accent">Hall</span>.store</span>
+            </div>
+           <!-- Di bagian navbar-menu, tambahkan data-page -->
+<div class="navbar-menu" id="navbarMenu">
+    <a href="#" class="nav-item" data-page="home"><i class="fas fa-home"></i> Beranda</a>
+    <a href="#" class="nav-item" data-page="market"><i class="fas fa-chart-simple"></i> Market</a>
+    <a href="#" class="nav-item" data-page="quest"><i class="fas fa-coins"></i> Kekayaan</a>
+    <a href="#" class="nav-item" data-page="quest"><i class="fas fa-quest"></i> Quest</a>
+</div>
+            <div class="navbar-actions">
+                <a href="public/page/login.html" class="btn-outline-light" id="loginBtn">Masuk</a>
+                <a href="public/page/register.html" class="btn-primary-glow" id="registerBtn">Daftar</a>
+            </div>
+            <button class="mobile-menu-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section utama -->
+    <main>
+        <section class="hero">
+            <div class="container hero-container">
+                <div class="hero-badge" data-aos="fade-up">
+                    <span class="badge-glow"><i class="fas fa-crown"></i> Peluncuran Terbaru </span>
+                </div>
+                <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">
+                    Trade karakter mu <span class="gradient-text">disini</span><br>
+                    demi kekayaan
+                </h1>
+                <p class="hero-desc" data-aos="fade-up" data-aos-delay="200">
+                    <strong>CharacterHall.store</strong> adalah tempat jual beli gambar wafiu untuk bersenang-senang. 
+                    Kamu dapat menjual, menukar, atau membeli wafiu atau karaktermu disini.
+                </p>
+                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
+                    <a href="public/page/login.html" class="btn-primary-large" id="ctaMasukDisini">
+                        <i class="fas fa-arrow-right-to-bracket"></i> Masuk Disini
+                    </a>
+                    <a href="#" class="btn-secondary-large" id="ctaPelajari">
+                        <i class="fas fa-graduation-cap"></i> Pelajari cara bermain
+                    </a>
+                </div>
+                <div class="hero-stats" data-aos="fade-up" data-aos-delay="400">
+                    <div class="stat-item">
+                        <span class="stat-number">Online</span>
+                        <span class="stat-label">Status</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">Gratis</span>
+                        <span class="stat-label">Langganan</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">???</span>
+                        <span class="stat-label"> Card karakter</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature / Value Proposition -->
+        <section class="features">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-tag"><i class="fas fa-gem"></i> Lebih Dari Sekadar Jual Beli</span>
+                    <h2 class="section-title">Bukan itu saja...! <span class="highlight-block">Kamu bisa menghasilkan</span> alat tukar mu sendiri</h2>
+                    <p class="section-subtitle">Dengan cara menyelesaikan quest, building Farm, Level-up, dan masih banyak lagi..!</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="feature-icon"><i class="fas fa-scroll"></i></div>
+                        <h3>Selesaikan Quest Epic</h3>
+                        <p>Ribuan misi harian & mingguan dengan hadiah koin eksklusif dan item langka untuk memperkaya karaktermu.</p>
+                        <a href="#" class="feature-link">Jelajahi Quest <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="feature-icon"><i class="fas fa-tractor"></i></div>
+                        <h3>Building Farm</h3>
+                        <p>Bangun dan kelola farm virtualmu. Panen sumber daya dan jual dengan harga tertinggi di market!</p>
+                        <a href="#" class="feature-link">Mulai Bertani <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Level-Up & Prestige</h3>
+                        <p>Setiap transaksi dan aktivitas menambah EXP. Naik level, buka fitur eksklusif dan jadi trader legendaris.</p>
+                        <a href="#" class="feature-link">Tingkatkan Level <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="feature-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                        <h3>Market Fleksibel</h3>
+                        <p>Jual, tukar, atau lelang wafiu favoritmu. Sistem aman dan komunitas ramah siap membantu.</p>
+                        <a href="#" class="feature-link">Kunjungi Pasar <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Banner / Menjadi Terkaya -->
+        <section class="cta-wealth">
+            <div class="container cta-container" data-aos="zoom-in">
+                <div class="cta-glow-card">
+                    <div class="cta-icon-wrapper">
+                        <i class="fas fa-sack-dollar"></i>
+                    </div>
+                    <h2>Kunjungi <span>CharacterHall.store</span> untuk menjadi <span class="wealth-highlight">Terkaya</span></h2>
+                    <p>Ribuan karakter langka menunggu untuk kamu miliki. Mulai perjalananmu sekarang dan raih puncak kekayaan!</p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn-cta-primary"><i class="fas fa-rocket"></i> Mulai Sekarang</a>
+                        <a href="#" class="btn-cta-secondary"><i class="fas fa-play-circle"></i> Lihat Demo</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cara Kerja / How it works -->
+        <section class="how-it-works">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-tag"><i class="fas fa-chalkboard-user"></i> Cara Bermain</span>
+                    <h2 class="section-title">Bangun Kerajaan Karaktermu <span class="highlight-block">Dalam 3 Langkah</span></h2>
+                </div>
+                <div class="steps-container">
+                    <div class="step-item" data-aos="fade-right">
+                        <div class="step-number">01</div>
+                        <div class="step-content">
+                            <h3>Daftar & Buat Karakter</h3>
+                            <p>Registrasi gratis, langsung dapatkan starter pack berisi 3000 koin emas, 200 dark crystal, 50 Ruby</p>
+                        </div>
+                    </div>
+                    <div class="step-item" data-aos="fade-left" data-aos-delay="100">
+                        <div class="step-number">02</div>
+                        <div class="step-content">
+                            <h3>Jual, Tukar, atau Investasi</h3>
+                            <p>Listing karakter favoritmu atau beli karakter dengan harga terbaik. Setiap transaksi menghasilkan profit!</p>
+                        </div>
+                    </div>
+                    <div class="step-item" data-aos="fade-right" data-aos-delay="200">
+                        <div class="step-number">03</div>
+                        <div class="step-content">
+                            <h3>Farm & Quest untuk Cuan Maksimal</h3>
+                            <p>Selesaikan misi harian, bangun farm otomatis, dan kumpulkan alat tukar dalam jumlah fantastis.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       
+        <!-- Footer Modern -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <img src="/assets/image/logo.png" alt="CharacterHall Logo" class="footer-logo" onerror="this.src='https://placehold.co/48x48/6366f1/white?text=CH'">
+                        <h3>CharacterHall.store</h3>
+                        <p>Trade karakter mu disini demi kekayaan tak terbatas.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-discord"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-tiktok"></i></a>
+                        </div>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Tautan</h4>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Tentang Kami</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Kebijakan Privasi</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Syarat & Ketentuan</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Bantuan</a>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Komunitas</h4>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Discord Server</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Event & Turnamen</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Leaderboard</a>
+                        <a href="#"><i class="fas fa-chevron-right"></i> Galeri Karakter</a>
+                    </div>
+                    <div class="footer-newsletter">
+                        <h4>Dapatkan Update</h4>
+                        <p>Berlangganan newsletter untuk info promo & karakter eksklusif.</p>
+                        <div class="newsletter-form">
+                            <input type="email" placeholder="Email kamu...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 CharacterHall.store | Tempat Terkaya Karakter & Wafiu. Seluruh hak cipta dilindungi.</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Modal Notifikasi sederhana (untuk demo interaksi) -->
+ 
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="public/js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Karakter | CharacterHall.store</title>
+    <link rel="stylesheet" href="/public/css/detail.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <img src="/assets/image/logo.png" alt="Logo" class="nav-logo" onerror="this.src='https://placehold.co/40x40/6366f1/white?text=CH'">
+                <span>Character<span class="highlight">Hall</span>.store</span>
+            </div>
+            <div class="nav-menu">
+                <a href="home.html" class="nav-link">
+                    <i class="fas fa-home"></i> Beranda
+                </a>
+                <a href="market.html" class="nav-link">
+                    <i class="fas fa-store"></i> Market
+                </a>
+                <a href="quest.html" class="nav-link">
+                    <i class="fas fa-tasks"></i> Quest
+                </a>
+                <a href="farm.html" class="nav-link">
+                    <i class="fas fa-tractor"></i> Farm
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-info" id="userInfo">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="userName">Loading...</span>
+                    <span class="user-level-badge" id="userLevelBadge">Lv.1</span>
+                </div>
+                <a href="login.html" class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="home.html">Beranda</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="market.html">Market</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Detail Karakter</span>
+            </div>
+
+            <!-- Confirmation Card -->
+            <div class="confirmation-card">
+                <div class="confirmation-header">
+                    <i class="fas fa-question-circle"></i>
+                    <h2 id="actionTitle">Apakah kamu yakin membeli ini?</h2>
+                </div>
+
+                <!-- Currency Display -->
+                <div class="currency-info">
+                    <div class="currency-item">
+                        <i class="fas fa-coins"></i>
+                        <span>koin emas</span>
+                        <strong id="pearlAmount">0.00G</strong>
+                    </div>
+                    <div class="currency-item">
+                        <i class="fas fa-gem"></i>
+                        <span>Dark Ruby</span>
+                        <strong id="ucAmount">0.00DR</strong>
+                    </div>
+                    <div class="currency-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Ruby</span>
+                        <strong id="crycoinsAmount">0.00R</strong>
+                    </div>
+                </div>
+
+                <!-- Character Detail -->
+                <div class="character-detail" id="characterDetail">
+                    <!-- Akan diisi JavaScript -->
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-yes" id="confirmBtn">
+                        <i class="fas fa-check-circle"></i> Ya
+                    </button>
+                    <a href="market.html" class="btn-no">
+                        <i class="fas fa-times-circle"></i> Tidak
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 CharacterHall.store - Tempat Terkaya Karakter & Wafiu | Trade karakter mu disini demi kekayaan</p>
+        </div>
+    </footer>
+
+    <script src="/public/js/detail.js"></script>
+</body>
+</html>
