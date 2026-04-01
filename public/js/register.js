@@ -1,404 +1,419 @@
-class RegisterManager {
-    constructor() {
-        this.users = [];
-        this.init();
+// public/js/register.js
+// CharacterHall.store - Register System with user.json storage and bonus currency
+
+(function() {
+    'use strict';
+
+    // Database URL (user.json)
+    const DATABASE_URL = '../../database/user.json';
+    
+    // Bonus mata uang untuk pendaftaran
+    const REGISTRATION_BONUS = {
+        gold_coin: 120000,
+        dark_ruby: 10000,
+        andesite_dust: 9000,
+        stonecaller: 100,
+        card_fragments: 0
+    };
+    
+    // Starter cards untuk user baru
+    const STARTER_CARDS = [
+        "Starter Waifu",
+        "Common Card",
+        "Beginner's Luck"
+    ];
+    
+    // State
+    let usersData = [];
+    let isLoading = false;
+
+    // DOM Elements
+    const registerForm = document.getElementById('registerForm');
+    const fullnameInput = document.getElementById('fullname');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const fullnameError = document.getElementById('fullnameError');
+    const usernameError = document.getElementById('usernameError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmError = document.getElementById('confirmError');
+    const registerBtn = document.getElementById('registerBtn');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    // Inisialisasi
+    async function init() {
+        await loadUserData();
+        attachEventListeners();
     }
 
-    init() {
-        this.form = document.getElementById('registerForm');
-        this.namaInput = document.getElementById('nama');
-        this.usernameInput = document.getElementById('username');
-        this.emailInput = document.getElementById('email');
-        this.passwordInput = document.getElementById('password');
-        this.confirmInput = document.getElementById('confirmPassword');
-        this.registerBtn = document.getElementById('registerBtn');
-        this.termsCheckbox = document.getElementById('termsCheckbox');
-        this.toast = document.getElementById('toast');
-        
-        this.setupEventListeners();
-        this.loadUsers();
+    // Load data dari user.json
+    async function loadUserData() {
+        try {
+            const response = await fetch(DATABASE_URL);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: Gagal memuat database`);
+            }
+            const data = await response.json();
+            
+            // Parse data sesuai struktur: { users: [...] }
+            if (data.users && Array.isArray(data.users)) {
+                usersData = data.users;
+            } else if (Array.isArray(data)) {
+                usersData = data;
+            } else {
+                usersData = [];
+            }
+            
+            console.log(`✅ Database loaded: ${usersData.length} users ditemukan`);
+        } catch (error) {
+            console.error('Error loading user database:', error);
+            usersData = [];
+        }
     }
 
-    setupEventListeners() {
-        this.form.addEventListener('submit', (e) => this.handleRegister(e));
+    // Attach event listeners
+    function attachEventListeners() {
+        if (registerForm) {
+            registerForm.addEventListener('submit', handleRegister);
+        }
         
-        // Toggle password visibility
-        document.querySelectorAll('.toggle-password').forEach(btn => {
-            btn.addEventListener('click', () => this.togglePassword(btn.dataset.target));
+        // Toggle password visibility untuk semua field
+        const toggleButtons = document.querySelectorAll('.toggle-password');
+        toggleButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const targetInput = document.getElementById(targetId);
+                if (targetInput) {
+                    const type = targetInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    targetInput.setAttribute('type', type);
+                    const icon = btn.querySelector('i');
+                    if (icon) {
+                        icon.classList.toggle('fa-eye');
+                        icon.classList.toggle('fa-eye-slash');
+                    }
+                }
+            });
         });
         
         // Real-time validation
-        this.namaInput.addEventListener('blur', () => this.validateNama());
-        this.usernameInput.addEventListener('blur', () => this.validateUsername());
-        this.emailInput.addEventListener('blur', () => this.validateEmail());
-        this.passwordInput.addEventListener('blur', () => this.validatePassword());
-        this.confirmInput.addEventListener('blur', () => this.validateConfirmPassword());
-        
-        // Terms link
-        const termsLink = document.getElementById('termsLink');
-        if (termsLink) {
-            termsLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.showToast('Syarat & Ketentuan akan segera hadir', 'info');
+        if (fullnameInput) {
+            fullnameInput.addEventListener('input', () => clearError(fullnameError));
+        }
+        if (usernameInput) {
+            usernameInput.addEventListener('input', () => {
+                clearError(usernameError);
+                validateUsernameAvailability();
+            });
+        }
+        if (passwordInput) {
+            passwordInput.addEventListener('input', () => {
+                clearError(passwordError);
+                validatePasswordStrength();
+            });
+        }
+        if (confirmPasswordInput) {
+            confirmPasswordInput.addEventListener('input', () => {
+                clearError(confirmError);
+                validatePasswordMatch();
             });
         }
     }
 
-    async loadUsers() {
-        try {
-            const response = await fetch('/database/user.json');
-            if (response.ok) {
-                const data = await response.json();
-                this.users = data.users || [];
-            }
-        } catch (error) {
-            console.error('Error loading users:', error);
-            this.users = [];
+    // Validate username availability
+    function validateUsernameAvailability() {
+        const username = usernameInput.value.trim();
+        if (username.length < 3) return;
+        
+        const existingUser = usersData.find(u => 
+            u.username && u.username.toLowerCase() === username.toLowerCase()
+        );
+        
+        if (existingUser) {
+            showFieldError(usernameError, 'Username sudah digunakan. Silakan pilih username lain.');
+            return false;
         }
+        return true;
     }
 
-    async handleRegister(e) {
+    // Validate password strength
+    function validatePasswordStrength() {
+        const password = passwordInput.value;
+        if (password.length > 0 && password.length < 6) {
+            showFieldError(passwordError, 'Kata sandi minimal 6 karakter');
+            return false;
+        }
+        return true;
+    }
+
+    // Validate password match
+    function validatePasswordMatch() {
+        const password = passwordInput.value;
+        const confirm = confirmPasswordInput.value;
+        
+        if (confirm.length > 0 && password !== confirm) {
+            showFieldError(confirmError, 'Konfirmasi kata sandi tidak cocok');
+            return false;
+        }
+        return true;
+    }
+
+    // Handle register submission
+    async function handleRegister(e) {
         e.preventDefault();
         
-        // Clear previous errors
-        this.clearErrors();
+        // Clear all errors
+        clearAllErrors();
         
-        // Validate all fields
-        const isNamaValid = this.validateNama();
-        const isUsernameValid = await this.validateUsername();
-        const isEmailValid = this.validateEmail();
-        const isPasswordValid = this.validatePassword();
-        const isConfirmValid = this.validateConfirmPassword();
-        const isTermsChecked = this.validateTerms();
+        // Get values
+        const fullname = fullnameInput.value.trim();
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
         
-        if (!isNamaValid || !isUsernameValid || !isEmailValid || !isPasswordValid || !isConfirmValid || !isTermsChecked) {
-            this.showToast('Harap lengkapi data dengan benar', 'error');
-            return;
+        // Validasi input
+        let isValid = true;
+        
+        if (!fullname) {
+            showFieldError(fullnameError, 'Nama lengkap tidak boleh kosong');
+            isValid = false;
+        } else if (fullname.length < 3) {
+            showFieldError(fullnameError, 'Nama lengkap minimal 3 karakter');
+            isValid = false;
         }
         
-        // Check if username already exists
-        if (await this.isUsernameExists(this.usernameInput.value.trim())) {
-            this.showError('usernameError', 'Username sudah digunakan');
-            this.usernameInput.classList.add('error');
-            return;
+        if (!username) {
+            showFieldError(usernameError, 'Username tidak boleh kosong');
+            isValid = false;
+        } else if (username.length < 3) {
+            showFieldError(usernameError, 'Username minimal 3 karakter');
+            isValid = false;
+        } else if (username.match(/[^a-zA-Z0-9_]/)) {
+            showFieldError(usernameError, 'Username hanya boleh berisi huruf, angka, dan underscore');
+            isValid = false;
+        } else if (!validateUsernameAvailability()) {
+            isValid = false;
         }
         
-        // Check if email already exists
-        if (await this.isEmailExists(this.emailInput.value.trim())) {
-            this.showError('emailError', 'Email sudah terdaftar');
-            this.emailInput.classList.add('error');
-            return;
+        if (!password) {
+            showFieldError(passwordError, 'Kata sandi tidak boleh kosong');
+            isValid = false;
+        } else if (password.length < 6) {
+            showFieldError(passwordError, 'Kata sandi minimal 6 karakter');
+            isValid = false;
         }
         
-        // Create new user
-        const newUser = this.createUserObject();
+        if (!confirmPassword) {
+            showFieldError(confirmError, 'Konfirmasi kata sandi tidak boleh kosong');
+            isValid = false;
+        } else if (password !== confirmPassword) {
+            showFieldError(confirmError, 'Konfirmasi kata sandi tidak cocok');
+            isValid = false;
+        }
         
-        // Save to database
-        await this.saveUser(newUser);
+        if (!isValid) return;
         
-        // Show success and redirect
-        this.showToast(`Selamat! Akun ${newUser.nama} berhasil dibuat. Reward telah ditambahkan ke dompetmu! 🎉`, 'success');
+        // Show loading
+        showLoading(true);
         
-        // Store user session and redirect to home
-        setTimeout(() => {
-            sessionStorage.setItem('currentUser', JSON.stringify(newUser));
-            window.location.href = '/root/page/home.html';
-        }, 1500);
+        // Simulasi delay
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
+        // Buat user baru dengan bonus mata uang
+        const newUser = createNewUser(fullname, username, password);
+        
+        // Simpan ke database
+        const success = await saveUserToDatabase(newUser);
+        
+        if (success) {
+            handleRegisterSuccess(newUser);
+        } else {
+            handleRegisterFailure();
+        }
+        
+        showLoading(false);
     }
 
-    createUserObject() {
-        const now = new Date().toISOString();
-        
+    // Create new user object with bonus currency
+    function createNewUser(fullname, username, password) {
         return {
-            id: Date.now(),
-            nama: this.namaInput.value.trim(),
-            username: this.usernameInput.value.trim(),
-            password: this.passwordInput.value,
-            email: this.emailInput.value.trim(),
-            created_at: now,
-            wallet: {
-                koin_emas: 10000,
-                dark_crystal: 100,
-                ruby: 10
-            },
-            inventory: {
-                characters: [
-                    {
-                        id: "starter_char_001",
-                        name: "Pemula Warrior",
-                        rarity: "Common",
-                        value: 100
-                    },
-                    {
-                        id: "starter_char_002",
-                        name: "Mage Pemula",
-                        rarity: "Common",
-                        value: 100
-                    }
-                ]
-            },
+            fullname: fullname,
+            username: username,
+            password: password,
             level: 1,
-            xp: 0,
-            registration_reward_claimed: true
+            jumlah_card: STARTER_CARDS.length,
+            card: STARTER_CARDS,
+            // Bonus mata uang
+            currency: {
+                gold_coin: REGISTRATION_BONUS.gold_coin,
+                dark_ruby: REGISTRATION_BONUS.dark_ruby,
+                andesite_dust: REGISTRATION_BONUS.andesite_dust,
+                stonecaller: REGISTRATION_BONUS.stonecaller,
+                card_fragments: REGISTRATION_BONUS.card_fragments
+            },
+            registered_at: new Date().toISOString(),
+            last_login: null
         };
     }
 
-    async saveUser(newUser) {
+    // Save user to database (simulate write to JSON)
+    async function saveUserToDatabase(newUser) {
         try {
-            // Add to users array
-            this.users.push(newUser);
+            // Tambahkan user baru ke array
+            usersData.push(newUser);
             
-            // Save to user.json
-            const data = { users: this.users };
-            const response = await fetch('../../database/user.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
+            // Untuk keperluan demo, kita simpan ke localStorage sebagai backup
+            // karena di browser tidak bisa menulis langsung ke file JSON
+            // Tapi kita tetap mencoba fetch dengan POST jika ada endpoint
             
-            // Since we can't actually write to file from frontend (would need backend),
-            // we'll store in localStorage for demo purposes
-            localStorage.setItem('registeredUsers', JSON.stringify(this.users));
+            // Simpan ke localStorage sebagai backup
+            const allUsers = {
+                users: usersData,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem('characterhall_users', JSON.stringify(allUsers));
             
-            console.log('User saved successfully:', newUser.username);
+            // Coba kirim ke server jika ada endpoint (opsional)
+            // Untuk sekarang, kita gunakan localStorage sebagai penyimpanan sementara
+            
+            console.log('✅ User registered:', newUser.username);
+            return true;
             
         } catch (error) {
             console.error('Error saving user:', error);
-            // Fallback: store in localStorage
-            const existingUsers = localStorage.getItem('registeredUsers');
-            let allUsers = existingUsers ? JSON.parse(existingUsers) : [];
-            allUsers.push(newUser);
-            localStorage.setItem('registeredUsers', JSON.stringify(allUsers));
+            return false;
         }
     }
 
-    async isUsernameExists(username) {
-        // Check from loaded users
-        const exists = this.users.some(user => user.username === username);
+    // Handle successful registration
+    function handleRegisterSuccess(user) {
+        // Format bonus untuk ditampilkan
+        const bonusMessage = `
+            🎉 Selamat! Akun ${user.username} berhasil dibuat!
+            
+            ✨ Bonus yang kamu dapatkan:
+            • 120.000 Koin Emas
+            • 10.000 Dark Ruby
+            • 9.000 Andesite Dust
+            • 100 Stonecaller
+            • 0 Card Fragments
+            
+            🃏 Starter Cards: ${STARTER_CARDS.join(', ')}
+            
+            Silakan login untuk mulai bermain!
+        `;
         
-        // Also check from localStorage backup
-        const localUsers = localStorage.getItem('registeredUsers');
-        if (localUsers) {
-            const users = JSON.parse(localUsers);
-            return exists || users.some(user => user.username === username);
-        }
+        showAlert(bonusMessage, 'success');
         
-        return exists;
+        // Redirect ke halaman login setelah 2.5 detik
+        setTimeout(() => {
+            window.location.href = 'home.html';
+        }, 2500);
     }
 
-    async isEmailExists(email) {
-        const exists = this.users.some(user => user.email === email);
-        
-        const localUsers = localStorage.getItem('registeredUsers');
-        if (localUsers) {
-            const users = JSON.parse(localUsers);
-            return exists || users.some(user => user.email === email);
-        }
-        
-        return exists;
+    // Handle registration failure
+    function handleRegisterFailure() {
+        showAlert('Gagal mendaftarkan akun. Silakan coba lagi.', 'error');
     }
 
-    validateNama() {
-        const nama = this.namaInput.value.trim();
-        const errorElement = document.getElementById('namaError');
-        
-        if (!nama) {
-            this.showError('namaError', 'Nama lengkap harus diisi');
-            this.namaInput.classList.add('error');
-            return false;
-        } else if (nama.length < 3) {
-            this.showError('namaError', 'Nama lengkap minimal 3 karakter');
-            this.namaInput.classList.add('error');
-            return false;
-        }
-        
-        this.namaInput.classList.remove('error');
-        errorElement.classList.remove('show');
-        return true;
-    }
-
-    async validateUsername() {
-        const username = this.usernameInput.value.trim();
-        const errorElement = document.getElementById('usernameError');
-        
-        if (!username) {
-            this.showError('usernameError', 'Username harus diisi');
-            this.usernameInput.classList.add('error');
-            return false;
-        } else if (username.length < 3) {
-            this.showError('usernameError', 'Username minimal 3 karakter');
-            this.usernameInput.classList.add('error');
-            return false;
-        } else if (username.length > 20) {
-            this.showError('usernameError', 'Username maksimal 20 karakter');
-            this.usernameInput.classList.add('error');
-            return false;
-        } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-            this.showError('usernameError', 'Username hanya boleh huruf, angka, dan underscore');
-            this.usernameInput.classList.add('error');
-            return false;
-        }
-        
-        // Check if username exists
-        if (await this.isUsernameExists(username)) {
-            this.showError('usernameError', 'Username sudah digunakan');
-            this.usernameInput.classList.add('error');
-            return false;
-        }
-        
-        this.usernameInput.classList.remove('error');
-        errorElement.classList.remove('show');
-        return true;
-    }
-
-    validateEmail() {
-        const email = this.emailInput.value.trim();
-        const errorElement = document.getElementById('emailError');
-        const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
-        
-        if (!email) {
-            this.showError('emailError', 'Email harus diisi');
-            this.emailInput.classList.add('error');
-            return false;
-        } else if (!emailRegex.test(email)) {
-            this.showError('emailError', 'Format email tidak valid');
-            this.emailInput.classList.add('error');
-            return false;
-        }
-        
-        this.emailInput.classList.remove('error');
-        errorElement.classList.remove('show');
-        return true;
-    }
-
-    validatePassword() {
-        const password = this.passwordInput.value;
-        const errorElement = document.getElementById('passwordError');
-        
-        if (!password) {
-            this.showError('passwordError', 'Kata sandi harus diisi');
-            this.passwordInput.classList.add('error');
-            return false;
-        } else if (password.length < 6) {
-            this.showError('passwordError', 'Kata sandi minimal 6 karakter');
-            this.passwordInput.classList.add('error');
-            return false;
-        } else if (!/(?=.*[A-Za-z])(?=.*\d)/.test(password)) {
-            this.showError('passwordError', 'Kata sandi harus mengandung huruf dan angka');
-            this.passwordInput.classList.add('error');
-            return false;
-        }
-        
-        this.passwordInput.classList.remove('error');
-        errorElement.classList.remove('show');
-        return true;
-    }
-
-    validateConfirmPassword() {
-        const password = this.passwordInput.value;
-        const confirm = this.confirmInput.value;
-        const errorElement = document.getElementById('confirmError');
-        
-        if (!confirm) {
-            this.showError('confirmError', 'Konfirmasi kata sandi harus diisi');
-            this.confirmInput.classList.add('error');
-            return false;
-        } else if (password !== confirm) {
-            this.showError('confirmError', 'Kata sandi tidak cocok');
-            this.confirmInput.classList.add('error');
-            return false;
-        }
-        
-        this.confirmInput.classList.remove('error');
-        errorElement.classList.remove('show');
-        return true;
-    }
-
-    validateTerms() {
-        const errorElement = document.getElementById('termsError');
-        
-        if (!this.termsCheckbox.checked) {
-            if (!document.getElementById('termsError')) {
-                const termsGroup = document.querySelector('.form-options');
-                const errorDiv = document.createElement('div');
-                errorDiv.id = 'termsError';
-                errorDiv.className = 'input-error';
-                errorDiv.style.marginTop = '0.5rem';
-                errorDiv.textContent = 'Harap setujui syarat & ketentuan';
-                termsGroup.appendChild(errorDiv);
-                setTimeout(() => errorDiv.classList.add('show'), 10);
-            } else {
-                const errorDiv = document.getElementById('termsError');
-                errorDiv.textContent = 'Harap setujui syarat & ketentuan';
-                errorDiv.classList.add('show');
-            }
-            return false;
-        }
-        
-        const errorDiv = document.getElementById('termsError');
-        if (errorDiv) {
-            errorDiv.classList.remove('show');
-        }
-        return true;
-    }
-
-    togglePassword(targetId) {
-        const input = document.getElementById(targetId);
-        const icon = event.currentTarget.querySelector('i');
-        
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            input.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    }
-
-    showError(elementId, message) {
-        const element = document.getElementById(elementId);
+    // UI Helpers
+    function showFieldError(element, message) {
         if (element) {
             element.textContent = message;
             element.classList.add('show');
         }
     }
-
-    clearErrors() {
-        document.querySelectorAll('.input-error').forEach(el => {
-            el.classList.remove('show');
-        });
-        document.querySelectorAll('input').forEach(input => {
-            input.classList.remove('error');
-        });
-    }
-
-    setLoading(isLoading) {
-        if (isLoading) {
-            this.registerBtn.classList.add('loading');
-            this.registerBtn.innerHTML = '<i class="fas fa-spinner"></i> Mendaftarkan...';
-            this.registerBtn.disabled = true;
-        } else {
-            this.registerBtn.classList.remove('loading');
-            this.registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Daftar Sekarang';
-            this.registerBtn.disabled = false;
+    
+    function clearError(element) {
+        if (element) {
+            element.textContent = '';
+            element.classList.remove('show');
         }
     }
-
-    showToast(message, type = 'info') {
-        this.toast.textContent = message;
-        this.toast.className = `toast ${type} show`;
-        
-        setTimeout(() => {
-            this.toast.classList.remove('show');
-        }, 3000);
+    
+    function clearAllErrors() {
+        clearError(fullnameError);
+        clearError(usernameError);
+        clearError(passwordError);
+        clearError(confirmError);
     }
-}
-
-// Initialize register manager when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    new RegisterManager();
-});
+    
+    function showLoading(show) {
+        isLoading = show;
+        if (loadingOverlay) {
+            loadingOverlay.style.display = show ? 'flex' : 'none';
+        }
+        if (registerBtn) {
+            registerBtn.disabled = show;
+            if (show) {
+                registerBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Mendaftarkan...';
+            } else {
+                registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Daftar Sekarang';
+            }
+        }
+    }
+    
+    // Custom alert toast with multi-line support
+    function showAlert(message, type = 'info') {
+        const existingAlert = document.querySelector('.custom-alert');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+        
+        const alertContainer = document.createElement('div');
+        alertContainer.className = 'custom-alert';
+        
+        const alertToast = document.createElement('div');
+        alertToast.className = `alert-toast ${type}`;
+        
+        let icon = '';
+        switch(type) {
+            case 'success':
+                icon = '<i class="fas fa-check-circle"></i>';
+                break;
+            case 'error':
+                icon = '<i class="fas fa-exclamation-circle"></i>';
+                break;
+            case 'info':
+            default:
+                icon = '<i class="fas fa-info-circle"></i>';
+                break;
+        }
+        
+        const formattedMessage = message.replace(/\n/g, '<br>');
+        
+        alertToast.innerHTML = `
+            ${icon}
+            <span style="white-space: pre-line; line-height: 1.5;">${formattedMessage}</span>
+        `;
+        
+        alertContainer.appendChild(alertToast);
+        document.body.appendChild(alertContainer);
+        
+        const duration = message.includes('\n') ? 5000 : 3000;
+        setTimeout(() => {
+            if (alertContainer && alertContainer.remove) {
+                alertContainer.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => alertContainer.remove(), 300);
+            }
+        }, duration);
+    }
+    
+    // Tambahkan animasi slide out
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Start initialization
+    init();
+})();

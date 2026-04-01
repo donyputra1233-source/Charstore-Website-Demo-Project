@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market - CharacterHall.store</title>
+    <link rel="icon" type="image/png" href="../../assets/image/logo/web.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/market.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo-area">
+            <img src="../../assets/image/logo/web.png" alt="CharacterHall Logo">
+            <div>
+                <h1>CharacterHall.<span class="highlight">store</span></h1>
+                <p class="tagline">Trade karakter mu disini demi kekayaan</p>
+            </div>
+        </div>
+        <div class="user-area">
+            <div class="user-info" id="userInfo">
+                <i class="fas fa-user-circle"></i>
+                <span id="userName">Loading...</span>
+                <span class="level-badge" id="userLevel">Lv.0</span>
+            </div>
+            <a href="home.html" class="home-btn">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="../page/login.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h2>Trade Market</h2>
+            <p>Cari Card yang mau dijual atau dibeli</p>
+        </div>
+
+        <!-- Search & Filter -->
+        <div class="filter-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Masukan nama karakter...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-rarity="all">All</button>
+                <button class="filter-btn" data-rarity="Common">Common</button>
+                <button class="filter-btn" data-rarity="Rare">Rare</button>
+                <button class="filter-btn" data-rarity="Epic">Epic</button>
+                <button class="filter-btn" data-rarity="Legendary">Legendary</button>
+                <button class="filter-btn" data-rarity="Mythic">Mythic</button>
+                <button class="filter-btn" data-rarity="Limited">Limited</button>
+            </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="cards-grid" id="cardsGrid">
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-pulse"></i>
+                <p>Memuat data karakter...</p>
+            </div>
+        </div>
+
+        <!-- Currency Display -->
+        <div class="currency-section">
+            <div class="currency-title">
+                <i class="fas fa-wallet"></i> Dompet Digital
+            </div>
+            <div class="currency-grid" id="currencyGrid">
+                <div class="currency-item">
+                    <i class="fas fa-coins"></i>
+                    <div class="currency-info">
+                        <span class="currency-name">Koin Emas</span>
+                        <span class="currency-value" id="goldCoin">0</span>
+                    </div>
+                    <span class="currency-symbol">G</span>
+                </div>
+                <div class="currency-item">
+                    <i class="fas fa-gem"></i>
+                    <div class="currency-info">
+                        <span class="currency-name">Dark Ruby</span>
+                        <span class="currency-value" id="darkRuby">0</span>
+                    </div>
+                    <span class="currency-symbol">DR</span>
+                </div>
+                <div class="currency-item">
+                    <i class="fas fa-mountain"></i>
+                    <div class="currency-info">
+                        <span class="currency-name">Andesite Dust</span>
+                        <span class="currency-value" id="andesiteDust">0</span>
+                    </div>
+                    <span class="currency-symbol">AD</span>
+                </div>
+                <div class="currency-item">
+                    <i class="fas fa-crown"></i>
+                    <div class="currency-info">
+                        <span class="currency-name">Stonecaller</span>
+                        <span class="currency-value" id="stonecaller">0</span>
+                    </div>
+                    <span class="currency-symbol">CS</span>
+                </div>
+                <div class="currency-item">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <div class="currency-info">
+                        <span class="currency-name">Card Fragments</span>
+                        <span class="currency-value" id="cardFragments">0</span>
+                    </div>
+                    <span class="currency-symbol">CF</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../js/market.js"></script>
+</body>
+</html>

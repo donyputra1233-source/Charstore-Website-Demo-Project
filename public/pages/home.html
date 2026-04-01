@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - CharacterHall.store</title>
+    <link rel="icon" type="image/png" href="../../assets/image/logo/web.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo-area">
+            <img src="../../assets/image/logo/web.png" alt="CharacterHall Logo">
+            <div>
+                <h1>CharacterHall.<span class="highlight">store</span></h1>
+                <p class="tagline">Trade karaktermu disini demi kekayaan</p>
+            </div>
+        </div>
+        <div class="user-area">
+            <div class="user-info" id="userInfo">
+                <i class="fas fa-user-circle"></i>
+                <span id="userName">Loading...</span>
+                <span class="level-badge" id="userLevel">Lv.0</span>
+            </div>
+            <a href="../page/login.html" class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h2 id="welcomeMessage">Selamat datang di CharacterHall.store</h2>
+            <p>Kamu bisa memilih salah satu menu untuk memulai Perjalanan mu</p>
+        </div>
+
+        <!-- Menu Grid dengan elemen <a> yang mengarah ke halaman masing-masing -->
+        <div class="menu-grid">
+            <!-- Harga Karakter -->
+            <a href="market.html" class="menu-card">
+                <div class="menu-icon">
+                    <i class="fas fa-tag"></i>
+                </div>
+                <div class="menu-content">
+                    <h3>Harga Karakter</h3>
+                    <p>Lihat daftar harga karakter waifu terkini</p>
+                </div>
+                <div class="menu-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Stock Karakter -->
+            <a href="stock.html" class="menu-card">
+                <div class="menu-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="menu-content">
+                    <h3>Stock Karakter</h3>
+                    <p>Cek ketersediaan karakter yang tersedia</p>
+                </div>
+                <div class="menu-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Tambang Ku -->
+            <a href="mine.html" class="menu-card">
+                <div class="menu-icon">
+                    <i class="fas fa-hammer"></i>
+                </div>
+                <div class="menu-content">
+                    <h3>Tambang Ku</h3>
+                    <p>Kelola tambang dan kumpulkan sumber daya</p>
+                </div>
+                <div class="menu-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Events Gacha -->
+            <a href="gacha.html" class="menu-card">
+                <div class="menu-icon">
+                    <i class="fas fa-dice-d6"></i>
+                </div>
+                <div class="menu-content">
+                    <h3>Events Gacha</h3>
+                    <p>Ikuti event dan dapatkan karakter langka</p>
+                </div>
+                <div class="menu-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Storage Card -->
+            <a href="storage.html" class="menu-card">
+                <div class="menu-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="menu-content">
+                    <h3>Storage Card</h3>
+                    <p>Lihat koleksi kartu waifu milikmu</p>
+                </div>
+                <div class="menu-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Bank Charstore -->
+            <a href="bank.html" class="menu-card">
+                <div class="menu-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <div class="menu-content">
+                    <h3>Bank Charstore</h3>
+                    <p>Kelola keuangan dan transaksi mu</p>
+                </div>
+                <div class="menu-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+        </div>
+
+        <!-- Currency Display -->
+        <div class="currency-section">
+            <div class="currency-title">
+                <i class="fas fa-wallet"></i> Dompet Digital
+            </div>
+            <div class="currency-grid" id="currencyGrid">
+                <div class="currency-item">
+                    <i class="fas fa-coins"></i>
+                    <div class="currency-info">
+                        <span class="currency-name">Koin Emas</span>
+                        <span class="currency-value" id="goldCoin">0</span>
+                    </div>
+                    <span class="currency-symbol">G</span>
+                </div>
+                <div class="currency-item">
+                    <i class="fas fa-gem"></i>
+                    <div class="currency-info">
+                        <span class="currency-name">Dark Ruby</span>
+                        <span class="currency-value" id="darkRuby">0</span>
+                    </div>
+                    <span class="currency-symbol">DR</span>
+                </div>
+                <div class="currency-item">
+                    <i class="fas fa-mountain"></i>
+                    <div class="currency-info">
+                        <span class="currency-name">Andesite Dust</span>
+                        <span class="currency-value" id="andesiteDust">0</span>
+                    </div>
+                    <span class="currency-symbol">AD</span>
+                </div>
+                <div class="currency-item">
+                    <i class="fas fa-crown"></i>
+                    <div class="currency-info">
+                        <span class="currency-name">Stonecaller</span>
+                        <span class="currency-value" id="stonecaller">0</span>
+                    </div>
+                    <span class="currency-symbol">CS</span>
+                </div>
+                <div class="currency-item">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <div class="currency-info">
+                        <span class="currency-name">Card Fragments</span>
+                        <span class="currency-value" id="cardFragments">0</span>
+                    </div>
+                    <span class="currency-symbol">CF</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/home.js"></script>
+</body>
+</html> 

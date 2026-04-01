@@ -1,36 +1,113 @@
 {
-  "users": [
-    {
-      "id": 1,
-      "nama": "Ryuuzen Dev's",
-      "username": "Ryuu_dev",
-      "password": "admin123",
-      "email": "admin@characterhall.com",
-      "created_at": "2025-01-15T10:30:00Z",
-      "wallet": {
-        "koin_emas": 15000,
-        "dark_crystal": 350,
-        "ruby": 125
-      },
-      "inventory": {
-        "characters": [
-          {
-            "id": "char_001",
-            "name": "Knight Lumina",
-            "rarity": "Legendary",
-            "value": 2500
-          },
-          {
-            "id": "char_002",
-            "name": "Shadow Assassin",
-            "rarity": "Epic",
-            "value": 1200
-          }
-          
-        ]
-      },
-      "level": 12,
-      "xp": 2450
-    }
-  ]
+    "users": [
+        {
+            "fullname": "Admin CharacterHall",
+            "username": "admin",
+            "password": "admin123",
+            "level": 10,
+            "jumlah_card": 25,
+            "card": [
+                "Legendary Waifu",
+                "Mythic Card",
+                "Epic Waifu",
+                "Rare Card",
+                "Common Card"
+            ],
+            "currency": {
+                "gold_coin": 500000,
+                "dark_ruby": 50000,
+                "andesite_dust": 45000,
+                "stonecaller": 500,
+                "card_fragments": 250
+            },
+            "registered_at": "2024-01-01T00:00:00.000Z",
+            "last_login": null
+        },
+        {
+            "fullname": "John Doe",
+            "username": "johndoe",
+            "password": "john123",
+            "level": 5,
+            "jumlah_card": 12,
+            "card": [
+                "Rare Waifu",
+                "Common Card",
+                "Limited Edition"
+            ],
+            "currency": {
+                "gold_coin": 150000,
+                "dark_ruby": 12000,
+                "andesite_dust": 10000,
+                "stonecaller": 150,
+                "card_fragments": 50
+            },
+            "registered_at": "2024-01-15T00:00:00.000Z",
+            "last_login": null
+        },
+        {
+            "fullname": "Jane Smith",
+            "username": "janesmith",
+            "password": "jane456",
+            "level": 8,
+            "jumlah_card": 18,
+            "card": [
+                "Epic Waifu",
+                "Rare Card",
+                "Mythic Card",
+                "Common Card"
+            ],
+            "currency": {
+                "gold_coin": 280000,
+                "dark_ruby": 25000,
+                "andesite_dust": 18000,
+                "stonecaller": 300,
+                "card_fragments": 120
+            },
+            "registered_at": "2024-01-10T00:00:00.000Z",
+            "last_login": null
+        },
+        {
+            "fullname": "Waifu Collector",
+            "username": "waifu_lover",
+            "password": "waifu789",
+            "level": 7,
+            "jumlah_card": 15,
+            "card": [
+                "Summer Waifu",
+                "Winter Waifu",
+                "Rare Card"
+            ],
+            "currency": {
+                "gold_coin": 200000,
+                "dark_ruby": 18000,
+                "andesite_dust": 14000,
+                "stonecaller": 200,
+                "card_fragments": 80
+            },
+            "registered_at": "2024-01-20T00:00:00.000Z",
+            "last_login": null
+        },
+        {
+            "fullname": "Card Trader",
+            "username": "trader_pro",
+            "password": "trader123",
+            "level": 9,
+            "jumlah_card": 22,
+            "card": [
+                "Legendary Trader Card",
+                "Mythic Card",
+                "Epic Card",
+                "Rare Card x2"
+            ],
+            "currency": {
+                "gold_coin": 350000,
+                "dark_ruby": 32000,
+                "andesite_dust": 25000,
+                "stonecaller": 400,
+                "card_fragments": 180
+            },
+            "registered_at": "2024-01-05T00:00:00.000Z",
+            "last_login": null
+        }
+    ]
 }

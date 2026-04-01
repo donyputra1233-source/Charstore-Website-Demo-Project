@@ -1,253 +1,371 @@
-class AuthManager {
-    constructor() {
-        this.userData = null;
-        this.init();
+// public/js/login.js
+// CharacterHall.store - Login System with redirect to home.html
+
+(function() {
+    'use strict';
+
+    // Database URL (user.json)
+    const DATABASE_URL = '../../database/user.json';
+    
+    // Redirect target setelah login sukses (ke home.html di folder pages)
+    const REDIRECT_URL = '../pages/home.html';
+    
+    // State
+    let usersData = [];
+    let isLoading = false;
+
+    // DOM Elements
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const usernameError = document.getElementById('usernameError');
+    const passwordError = document.getElementById('passwordError');
+    const loginBtn = document.getElementById('loginBtn');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    const registerLink = document.getElementById('registerLink');
+
+    // Inisialisasi
+    async function init() {
+        await loadUserData();
+        attachEventListeners();
+        
+        // Cek apakah sudah login sebelumnya (session storage)
+        checkExistingSession();
     }
 
-    init() {
-        this.form = document.getElementById('loginForm');
-        this.usernameInput = document.getElementById('username');
-        this.passwordInput = document.getElementById('password');
-        this.loginBtn = document.getElementById('loginBtn');
-        this.togglePasswordBtn = document.getElementById('togglePassword');
-        this.rememberCheckbox = document.getElementById('rememberMe');
-        this.toast = document.getElementById('toast');
-
-        this.setupEventListeners();
-        this.checkRememberedUser();
+    // Load data dari user.json
+    async function loadUserData() {
+        try {
+            const response = await fetch(DATABASE_URL);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: Gagal memuat database`);
+            }
+            const data = await response.json();
+            
+            // Parse data sesuai struktur: { users: [...] }
+            if (data.users && Array.isArray(data.users)) {
+                usersData = data.users;
+            } else if (Array.isArray(data)) {
+                usersData = data;
+            } else {
+                console.warn('Format database tidak dikenali, menggunakan array kosong');
+                usersData = [];
+            }
+            
+            console.log(`✅ Database loaded: ${usersData.length} users ditemukan`);
+        } catch (error) {
+            console.error('Error loading user database:', error);
+            showAlert('Gagal memuat database pengguna. Silakan refresh halaman.', 'error');
+            
+            // Fallback data untuk testing jika file tidak ditemukan
+            usersData = getFallbackData();
+        }
     }
 
-    setupEventListeners() {
-        this.form.addEventListener('submit', (e) => this.handleLogin(e));
-        this.togglePasswordBtn.addEventListener('click', () => this.togglePassword());
+    // Fallback data jika file user.json tidak ada
+    function getFallbackData() {
+        return [
+            {
+                fullname: "Admin Character",
+                username: "admin",
+                password: "admin123",
+                level: 10,
+                jumlah_card: 25,
+                card: ["Waifu Rare", "Mythic Card", "Legendary"]
+            },
+            {
+                fullname: "John Doe",
+                username: "johndoe",
+                password: "john123",
+                level: 5,
+                jumlah_card: 12,
+                card: ["Common Card", "Rare Card"]
+            },
+            {
+                fullname: "Jane Smith",
+                username: "janesmith",
+                password: "jane456",
+                level: 8,
+                jumlah_card: 18,
+                card: ["Epic Card", "Waifu Limited"]
+            }
+        ];
+    }
+
+    // Attach event listeners
+    function attachEventListeners() {
+        if (loginForm) {
+            loginForm.addEventListener('submit', handleLogin);
+        }
         
-        // Input validation on blur
-        this.usernameInput.addEventListener('blur', () => this.validateUsername());
-        this.passwordInput.addEventListener('blur', () => this.validatePassword());
+        if (togglePasswordBtn) {
+            togglePasswordBtn.addEventListener('click', togglePasswordVisibility);
+        }
         
-        // Register link
-        const registerLink = document.getElementById('registerLink');
         if (registerLink) {
-            registerLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.showToast('Fitur pendaftaran akan segera hadir! 🎉', 'info');
-                window.location.href = 'register.html';
-            });
+            registerLink.addEventListener('click', handleRegisterClick);
         }
         
-        // Forgot password
-        const forgotLink = document.getElementById('forgotPassword');
-        if (forgotLink) {
-            forgotLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.showToast('Hubungi admin untuk reset password', 'info');
+        // Real-time validation
+        if (usernameInput) {
+            usernameInput.addEventListener('input', () => clearError(usernameError));
+        }
+        if (passwordInput) {
+            passwordInput.addEventListener('input', () => clearError(passwordError));
+        }
+        
+        // Enter key submit
+        if (passwordInput) {
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && loginForm) {
+                    loginForm.dispatchEvent(new Event('submit'));
+                }
             });
         }
     }
 
-    async handleLogin(e) {
+    // Handle login submission
+    async function handleLogin(e) {
         e.preventDefault();
         
         // Clear previous errors
-        this.clearErrors();
+        clearAllErrors();
         
-        // Validate inputs
-        if (!this.validateUsername() || !this.validatePassword()) {
-            return;
-        }
+        // Get values
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
         
-        // Show loading state
-        this.setLoading(true);
-        
-        const username = this.usernameInput.value.trim();
-        const password = this.passwordInput.value;
-        
-        try {
-            // Fetch user data from database
-            const user = await this.authenticateUser(username, password);
-            
-            if (user) {
-                // Save user session
-                this.saveUserSession(user);
-                
-                // Show success message
-                this.showToast(`Selamat datang kembali, ${user.nama}! 🎉`, 'success');
-                
-                // Redirect to home after short delay
-                setTimeout(() => {
-                    window.location.href = 'home.html';
-                }, 1000);
-            } else {
-                this.showToast('Username atau kata sandi salah!', 'error');
-                this.passwordInput.classList.add('error');
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            this.showToast('Terjadi kesalahan. Silakan coba lagi.', 'error');
-        } finally {
-            this.setLoading(false);
-        }
-    }
-    
-// Update authenticateUser method in login.js to check localStorage as well
-async authenticateUser(username, password) {
-    try {
-        // First try to fetch from user.json
-        const response = await fetch('/database/user.json');
-        if (response.ok) {
-            const data = await response.json();
-            const user = data.users.find(u => u.username === username && u.password === password);
-            if (user) {
-                const { password: _, ...userWithoutPassword } = user;
-                return userWithoutPassword;
-            }
-        }
-    } catch (error) {
-        console.error('Error fetching user data:', error);
-    }
-    
-    // Check from localStorage (for newly registered users)
-    const localUsers = localStorage.getItem('registeredUsers');
-    if (localUsers) {
-        const users = JSON.parse(localUsers);
-        const user = users.find(u => u.username === username && u.password === password);
-        if (user) {
-            const { password: _, ...userWithoutPassword } = user;
-            return userWithoutPassword;
-        }
-    }
-    
-    // Fallback hardcoded admin
-    if (username === 'admin' && password === 'admin123') {
-        return {
-            id: 1,
-            nama: 'AdminUser',
-            username: 'admin',
-            email: 'admin@characterhall.com',
-            wallet: {
-                koin_emas: 15000,
-                dark_crystal: 350,
-                ruby: 125
-            },
-            inventory: {
-                characters: [
-                    { id: 'char_001', name: 'Knight Lumina', rarity: 'Legendary', value: 2500 },
-                    { id: 'char_002', name: 'Shadow Assassin', rarity: 'Epic', value: 1200 }
-                ]
-            },
-            level: 12,
-            xp: 2450
-        };
-    }
-    
-    return null;
-}
-    
-    saveUserSession(user) {
-        // Save to localStorage if remember me is checked
-        if (this.rememberCheckbox.checked) {
-            localStorage.setItem('rememberedUser', user.username);
-        }
-        
-        // Save session data
-        sessionStorage.setItem('currentUser', JSON.stringify(user));
-        
-        // Dispatch event for other pages
-        window.dispatchEvent(new CustomEvent('userLoggedIn', { detail: user }));
-    }
-    
-    checkRememberedUser() {
-        const rememberedUser = localStorage.getItem('rememberedUser');
-        if (rememberedUser) {
-            this.usernameInput.value = rememberedUser;
-            this.rememberCheckbox.checked = true;
-            this.passwordInput.focus();
-        }
-    }
-    
-    validateUsername() {
-        const username = this.usernameInput.value.trim();
-        const errorElement = document.getElementById('usernameError');
+        // Validasi input
+        let isValid = true;
         
         if (!username) {
-            this.showError(errorElement, 'Nama pengguna harus diisi');
-            this.usernameInput.classList.add('error');
-            return false;
-        } else if (username.length < 3) {
-            this.showError(errorElement, 'Nama pengguna minimal 3 karakter');
-            this.usernameInput.classList.add('error');
-            return false;
+            showFieldError(usernameError, 'Nama atau username tidak boleh kosong');
+            isValid = false;
         }
-        
-        this.usernameInput.classList.remove('error');
-        errorElement.classList.remove('show');
-        return true;
-    }
-    
-    validatePassword() {
-        const password = this.passwordInput.value;
-        const errorElement = document.getElementById('passwordError');
         
         if (!password) {
-            this.showError(errorElement, 'Kata sandi harus diisi');
-            this.passwordInput.classList.add('error');
-            return false;
-        } else if (password.length < 4) {
-            this.showError(errorElement, 'Kata sandi minimal 4 karakter');
-            this.passwordInput.classList.add('error');
-            return false;
+            showFieldError(passwordError, 'Kata sandi tidak boleh kosong');
+            isValid = false;
         }
         
-        this.passwordInput.classList.remove('error');
-        errorElement.classList.remove('show');
-        return true;
-    }
-    
-    showError(element, message) {
-        element.textContent = message;
-        element.classList.add('show');
-    }
-    
-    clearErrors() {
-        document.querySelectorAll('.input-error').forEach(el => {
-            el.classList.remove('show');
-        });
-        document.querySelectorAll('input').forEach(input => {
-            input.classList.remove('error');
-        });
-    }
-    
-    togglePassword() {
-        const type = this.passwordInput.type === 'password' ? 'text' : 'password';
-        this.passwordInput.type = type;
-        const icon = this.togglePasswordBtn.querySelector('i');
-        icon.classList.toggle('fa-eye');
-        icon.classList.toggle('fa-eye-slash');
-    }
-    
-    setLoading(isLoading) {
-        if (isLoading) {
-            this.loginBtn.classList.add('loading');
-            this.loginBtn.innerHTML = '<i class="fas fa-spinner"></i> Memproses...';
-            this.loginBtn.disabled = true;
+        if (!isValid) return;
+        
+        // Show loading
+        showLoading(true);
+        
+        // Simulasi delay untuk efek loading
+        await new Promise(resolve => setTimeout(resolve, 600));
+        
+        // Validasi user dengan password dari database
+        const user = validateUser(username, password);
+        
+        if (user) {
+            // Login sukses
+            handleLoginSuccess(user);
         } else {
-            this.loginBtn.classList.remove('loading');
-            this.loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i> Masuk';
-            this.loginBtn.disabled = false;
+            // Login gagal
+            handleLoginFailure();
+        }
+        
+        showLoading(false);
+    }
+
+    // Validate user credentials dengan password dari database
+    function validateUser(username, password) {
+        // Cari user berdasarkan username (case insensitive)
+        const user = usersData.find(u => 
+            u.username && u.username.toLowerCase() === username.toLowerCase()
+        );
+        
+        if (!user) {
+            return null;
+        }
+        
+        // Validasi password (case sensitive untuk keamanan)
+        if (user.password && user.password === password) {
+            return user;
+        }
+        
+        return null;
+    }
+
+    // Handle successful login - redirect ke home.html
+    function handleLoginSuccess(user) {
+        // Simpan data user ke session storage (tanpa password)
+        const sessionData = {
+            fullname: user.fullname,
+            username: user.username,
+            level: user.level,
+            jumlah_card: user.jumlah_card,
+            card: user.card,
+            loginTime: new Date().toISOString()
+        };
+        
+        sessionStorage.setItem('currentUser', JSON.stringify(sessionData));
+        sessionStorage.setItem('isLoggedIn', 'true');
+        
+        showAlert(`Selamat datang kembali, ${user.fullname || user.username}! ✨ Mengarahkan ke dashboard...`, 'success');
+        
+        // Redirect ke public/pages/home.html setelah 1 detik
+        setTimeout(() => {
+            window.location.href = REDIRECT_URL;
+        }, 1000);
+    }
+
+    // Handle login failure
+    function handleLoginFailure() {
+        showAlert('Username atau kata sandi salah. Silakan coba lagi.', 'error');
+        passwordInput.value = '';
+        passwordInput.focus();
+    }
+
+    // Toggle password visibility
+    function togglePasswordVisibility() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        const icon = togglePasswordBtn.querySelector('i');
+        if (icon) {
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        }
+    }
+
+    // Handle register link click
+    function handleRegisterClick(e) {
+        e.preventDefault();
+        
+        // Tampilkan daftar akun demo yang tersedia
+        const demoAccounts = usersData.map(user => 
+            `• ${user.username} | Password: ${user.password}`
+        ).join('\n');
+        
+        showAlert(
+            `📝 Fitur registrasi akan segera hadir! 🎉\n\nAkun demo yang tersedia:\n${demoAccounts}\n\n✨ Gunakan akun di atas untuk login ke home.html`,
+            'info'
+        );
+    }
+
+    // Check existing session
+    function checkExistingSession() {
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        if (isLoggedIn === 'true') {
+            const user = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (user) {
+                showAlert(`Selamat datang kembali, ${user.fullname || user.username}! Mengarahkan ke dashboard...`, 'success');
+                setTimeout(() => {
+                    window.location.href = REDIRECT_URL;
+                }, 1500);
+            }
+        }
+    }
+
+    // UI Helpers
+    function showFieldError(element, message) {
+        if (element) {
+            element.textContent = message;
+            element.classList.add('show');
         }
     }
     
-    showToast(message, type = 'info') {
-        this.toast.textContent = message;
-        this.toast.className = `toast ${type} show`;
-        
-        setTimeout(() => {
-            this.toast.classList.remove('show');
-        }, 3000);
+    function clearError(element) {
+        if (element) {
+            element.textContent = '';
+            element.classList.remove('show');
+        }
     }
-}
-
-// Initialize auth manager when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    new AuthManager();
-});
+    
+    function clearAllErrors() {
+        clearError(usernameError);
+        clearError(passwordError);
+    }
+    
+    function showLoading(show) {
+        isLoading = show;
+        if (loadingOverlay) {
+            loadingOverlay.style.display = show ? 'flex' : 'none';
+        }
+        if (loginBtn) {
+            loginBtn.disabled = show;
+            if (show) {
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Memproses...';
+            } else {
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
+            }
+        }
+    }
+    
+    // Custom alert toast
+    function showAlert(message, type = 'info') {
+        // Hapus alert yang sudah ada
+        const existingAlert = document.querySelector('.custom-alert');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+        
+        const alertContainer = document.createElement('div');
+        alertContainer.className = 'custom-alert';
+        
+        const alertToast = document.createElement('div');
+        alertToast.className = `alert-toast ${type}`;
+        
+        let icon = '';
+        switch(type) {
+            case 'success':
+                icon = '<i class="fas fa-check-circle"></i>';
+                break;
+            case 'error':
+                icon = '<i class="fas fa-exclamation-circle"></i>';
+                break;
+            case 'info':
+            default:
+                icon = '<i class="fas fa-info-circle"></i>';
+                break;
+        }
+        
+        // Handle multi-line message
+        const formattedMessage = message.replace(/\n/g, '<br>');
+        
+        alertToast.innerHTML = `
+            ${icon}
+            <span>${formattedMessage}</span>
+        `;
+        
+        alertContainer.appendChild(alertToast);
+        document.body.appendChild(alertContainer);
+        
+        // Auto remove after 4 seconds (lebih lama untuk multi-line)
+        const duration = message.includes('\n') ? 6000 : 3000;
+        setTimeout(() => {
+            if (alertContainer && alertContainer.remove) {
+                alertContainer.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => alertContainer.remove(), 300);
+            }
+        }, duration);
+    }
+    
+    // Tambahkan animasi slide out
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .alert-toast span {
+            white-space: pre-line;
+            line-height: 1.4;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Start initialization
+    init();
+})();
